@@ -121,7 +121,9 @@
     transition:background .2s;border:1px solid var(--line-soft)}
   .stage[data-ground="light"]{background:#FFFFFF}
   .stage[data-ground="dark"]{background:#111111;border-color:#111111}
-  .stage > div{max-width:100%;overflow-x:auto}
+  /* min-width:0 is load-bearing: as a flex item this defaults to min-width:auto,
+     refuses to shrink below the signature's width and widens the whole page. */
+  .stage > div{max-width:100%;min-width:0;overflow-x:auto}
   /* The preview must not rescale the signature's images — a clamped width with a
      fixed height attribute silently distorts them, and hides real sizing bugs. */
   #prev img{max-width:none}
@@ -159,6 +161,17 @@
   summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
   pre{margin:14px 0 0;background:var(--sunk);border-radius:12px;padding:15px;overflow-x:auto;
     font-family:var(--mono);font-size:11px;line-height:1.7;color:var(--ink);white-space:pre}
+  /* Phone: buy back the horizontal room the nested padding eats, so the
+     signature renders at full size instead of scrolling inside its stage. */
+  @media (max-width:520px){
+    .wrap{padding-inline:16px;padding-block:32px 56px}
+    .panel{padding:18px;border-radius:16px}
+    .stage{padding:20px 14px}
+    .masthead{margin-bottom:26px}
+    .phead{flex-wrap:wrap}
+    .guide{padding:13px 14px}
+    .meter{margin-left:0;width:100%}
+  }
   @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
