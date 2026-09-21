@@ -36,7 +36,6 @@
     }
   }
   *{box-sizing:border-box}
-  html,body{height:auto}
   body{
     margin:0;background-color:var(--bg);color:var(--ink);font-family:var(--sans);
     line-height:1.5;-webkit-font-smoothing:antialiased;
@@ -57,7 +56,6 @@
   .wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;
         padding-inline:20px;padding-block:46px 76px}
 
-  /* ---- Masthead ---- */
   .masthead{margin-bottom:34px;max-width:46ch}
   .masthead .logo{height:18px;width:auto;color:var(--ink);display:block;margin-bottom:24px}
   .masthead h1{font-family:var(--serif);font-size:clamp(36px,5.6vw,52px);font-weight:400;
@@ -65,7 +63,6 @@
   .masthead h1 em{font-style:italic;color:var(--accent)}
   .masthead p{margin:14px 0 0;color:var(--muted);font-size:15.5px}
 
-  /* ---- Panels ---- */
   .cols{display:grid;grid-template-columns:minmax(0,362px) minmax(0,1fr);gap:24px;align-items:start}
   @media (max-width:880px){.cols{grid-template-columns:1fr}}
   .panel{background:var(--card);border:1px solid var(--line);border-radius:20px;
@@ -74,7 +71,6 @@
   .phead{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px}
   .phead h2{font-size:12.5px;font-weight:600;letter-spacing:.04em;margin:0;color:var(--muted)}
 
-  /* ---- Form ---- */
   form{display:flex;flex-direction:column;gap:16px}
   .field{display:flex;flex-direction:column;gap:6px}
   .field > label{font-size:13px;font-weight:600}
@@ -112,7 +108,6 @@
   .note code{font-family:var(--mono);font-size:11.5px;background:rgba(127,127,127,.18);
     padding:1px 4px;border-radius:3px}
 
-  /* ---- Preview ---- */
   .seg{display:inline-flex;gap:3px;background:var(--sunk);padding:3px;border-radius:10px}
   .seg label{position:relative}
   .seg input{position:absolute;opacity:0;pointer-events:none}
@@ -140,10 +135,17 @@
   .status{font-size:12.5px;color:var(--ok);font-weight:600}
   .meter{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;margin-left:auto}
 
-  .install{margin-top:24px;padding-top:20px;border-top:1px solid var(--line-soft);
-    display:grid;grid-template-columns:repeat(auto-fit,minmax(196px,1fr));gap:18px}
-  .install div{font-size:12.5px;color:var(--muted);line-height:1.55}
-  .install b{display:block;color:var(--ink);font-size:12.5px;margin-bottom:3px}
+  /* ---- Install guides: stacked cards ---- */
+  .guides{display:flex;flex-direction:column;gap:10px;margin-top:24px;
+          padding-top:22px;border-top:1px solid var(--line-soft)}
+  .guide{display:flex;align-items:flex-start;gap:14px;background:var(--sunk);
+         border-radius:14px;padding:14px 16px}
+  .guide .gmark{width:34px;height:34px;flex:none;border-radius:9px;background:var(--card);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 1px 2px rgba(15,14,12,.08)}
+  .guide .gmark svg{width:21px;height:21px;display:block}
+  .guide b{display:block;font-size:13px;margin-bottom:2px}
+  .guide p{margin:0;font-size:12.5px;color:var(--muted);line-height:1.55}
 
   details{margin-top:20px;border-top:1px solid var(--line-soft);padding-top:16px}
   summary{cursor:pointer;font-size:12.5px;font-weight:600;color:var(--muted);list-style:none;
@@ -172,15 +174,15 @@
         <form id="sigform" autocomplete="off">
           <div class="field">
             <label for="f-name">Full name</label>
-            <input id="f-name" type="text" value="Ana Ruiz" placeholder="Ana Ruiz">
+            <input id="f-name" type="text" value="Leo Rosário" placeholder="Leo Rosário">
           </div>
           <div class="field">
             <label for="f-title">Job title</label>
-            <input id="f-title" type="text" value="Product Designer" placeholder="Product Designer">
+            <input id="f-title" type="text" value="Lead Designer" placeholder="Lead Designer">
           </div>
           <div class="field">
             <label for="f-email">Email</label>
-            <input id="f-email" type="email" value="ana@maker.co" placeholder="ana@maker.co">
+            <input id="f-email" type="email" value="leo@maker.co" placeholder="leo@maker.co">
           </div>
           <div class="field">
             <label for="f-phone">Phone <span class="opt">— optional</span></label>
@@ -205,12 +207,12 @@
             <input id="f-photo" type="url" placeholder="https://…/your-photo.png" hidden>
           </div>
           <label class="toggle" for="f-social">
-            <input type="checkbox" id="f-social"> Include social icons
+            <input type="checkbox" id="f-social" checked> Include social icons
           </label>
         </form>
         <div class="note" id="cfg-note" hidden>
-          <strong>Uploads aren't switched on yet.</strong> Add an unsigned Cloudinary upload
-          preset name to <code>CLOUDINARY.preset</code> in the script. Until then, use
+          <strong>Uploads aren't switched on.</strong> Add an unsigned Cloudinary upload preset
+          name to <code>CLOUDINARY.preset</code> in the script. Until then, use
           <em>Paste a link instead</em>.
         </div>
       </div>
@@ -234,10 +236,54 @@
           <span class="meter" id="meter"></span>
         </div>
 
-        <div class="install">
-          <div><b>Gmail</b>Settings → See all settings → Signature. Paste, then Save Changes at the bottom.</div>
-          <div><b>Outlook</b>Settings → Mail → Compose and reply. Paste into the signature box.</div>
-          <div><b>Apple Mail</b>Settings → Signatures. Paste, then untick “Always match my default message font”.</div>
+        <div class="guides">
+          <div class="guide">
+            <span class="gmark">
+              <svg viewBox="0 0 48 36" aria-hidden="true">
+                <rect width="48" height="36" rx="5" fill="#FFFFFF"/>
+                <path d="M0 9a5 5 0 0 1 8-4l3 2.2V22L0 14.2Z" fill="#FBBC04"/>
+                <path d="M0 14.2 11 22v14H5a5 5 0 0 1-5-5Z" fill="#4285F4"/>
+                <path d="M48 14.2 37 22v14h6a5 5 0 0 0 5-5Z" fill="#34A853"/>
+                <path d="M48 9a5 5 0 0 0-8-4L24 16.6 8 5a5 5 0 0 0-8 4v5.2L24 31.6 48 14.2Z" fill="#EA4335"/>
+              </svg>
+            </span>
+            <div>
+              <b>Gmail</b>
+              <p>Settings → See all settings → Signature → Create new. Paste, then Save Changes at the very bottom of the page.</p>
+            </div>
+          </div>
+
+          <div class="guide">
+            <span class="gmark">
+              <svg viewBox="0 0 48 36" aria-hidden="true">
+                <rect x="16" y="5" width="32" height="26" rx="3" fill="#1A8CFF"/>
+                <path d="M16 8.5 32 19.5 48 8.5" fill="none" stroke="#FFFFFF" stroke-width="3"/>
+                <rect x="0" y="1" width="27" height="34" rx="5" fill="#0A5BB8"/>
+                <ellipse cx="13.5" cy="18" rx="6.6" ry="8.4" fill="none" stroke="#FFFFFF" stroke-width="4"/>
+              </svg>
+            </span>
+            <div>
+              <b>Outlook</b>
+              <p>Settings → Mail → Compose and reply. Paste into the signature box, then pick it as the default for new messages and replies.</p>
+            </div>
+          </div>
+
+          <div class="guide">
+            <span class="gmark">
+              <svg viewBox="0 0 48 36" aria-hidden="true">
+                <defs><linearGradient id="am" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#3FC4FF"/><stop offset="1" stop-color="#0A7CFF"/>
+                </linearGradient></defs>
+                <rect width="48" height="36" rx="8" fill="url(#am)"/>
+                <rect x="9" y="10" width="30" height="17" rx="2.5" fill="#FFFFFF"/>
+                <path d="M9.8 11.4 24 21.2l14.2-9.8" fill="none" stroke="#0A7CFF" stroke-width="2.6"/>
+              </svg>
+            </span>
+            <div>
+              <b>Apple Mail</b>
+              <p>Settings → Signatures. Paste, then untick “Always match my default message font” or Mail strips the styling.</p>
+            </div>
+          </div>
         </div>
 
         <details>
@@ -253,9 +299,8 @@
 (function(){
   "use strict";
 
-  // preset: name of an UNSIGNED Cloudinary upload preset. "" disables uploading
-  // and falls back to pasting a URL. Never put an API key or secret here — this
-  // file is public.
+  // preset: an UNSIGNED Cloudinary upload preset. Never put an API key or
+  // secret here — this file is public.
   var CLOUDINARY = { cloud:"y1jdutly", preset:"emailsignature" };
 
   var CDN  = "https://res.cloudinary.com/y1jdutly/image/upload";
@@ -299,27 +344,31 @@
     lines.push('<a href="https://maker.co" style="color:' + ACCENT + ';text-decoration:none;font-weight:bold;">maker.co</a>');
     text += '<div style="font-size:13px;line-height:20px;padding-top:10px;">' + lines.join('<br>') + '</div>';
 
+    // Details left, portrait hard right.
     var identity = photoUrl
-      ? '<table cellpadding="0" cellspacing="0" border="0"><tr>'
-        + '<td style="padding-right:15px;vertical-align:top;">'
-        + '<img src="' + attr(photoUrl) + '" alt="' + attr(name) + '" width="58" height="58"'
-        + ' style="display:block;border:0;border-radius:29px;"></td>'
-        + '<td style="vertical-align:top;">' + text + '</td></tr></table>'
+      ? '<table cellpadding="0" cellspacing="0" border="0" width="100%"><tr>'
+        + '<td style="vertical-align:top;">' + text + '</td>'
+        + '<td align="right" width="62" style="width:62px;vertical-align:top;padding-left:16px;">'
+        + '<img src="' + attr(photoUrl) + '" alt="' + attr(name) + '" width="62" height="62"'
+        + ' style="display:block;border:0;border-radius:31px;"></td>'
+        + '</tr></table>'
       : text;
 
-    var footer = '<td style="vertical-align:middle;">'
-      + '<img src="' + attr(LOGO) + '" alt="Maker" width="104" height="20"'
-      + ' style="display:block;border:0;"></td>';
-
+    // Socials left, wordmark hard right.
+    var logo = '<img src="' + attr(LOGO) + '" alt="Maker" width="94" height="18"'
+             + ' style="display:block;border:0;">';
+    var footer;
     if ($("f-social").checked) {
       var cells = SOCIALS.map(function(s,i){
-        return '<td style="padding-left:' + (i ? 7 : 0) + 'px;">'
+        return '<td style="padding-right:' + (i === SOCIALS.length - 1 ? 0 : 9) + 'px;">'
              + '<a href="' + attr(s.url) + '"><img src="' + attr(s.src) + '" alt="' + attr(s.name)
-             + '" width="22" height="22" style="display:block;border:0;"></a></td>';
+             + '" width="24" height="24" style="display:block;border:0;"></a></td>';
       }).join("");
-      footer += '<td align="right" style="vertical-align:middle;">'
-              + '<table cellpadding="0" cellspacing="0" border="0" align="right"><tr>'
-              + cells + '</tr></table></td>';
+      footer = '<td style="vertical-align:middle;">'
+             + '<table cellpadding="0" cellspacing="0" border="0"><tr>' + cells + '</tr></table></td>'
+             + '<td align="right" style="vertical-align:middle;">' + logo + '</td>';
+    } else {
+      footer = '<td style="vertical-align:middle;">' + logo + '</td>';
     }
 
     return ''
@@ -344,7 +393,6 @@
     $("meter").textContent  = html.length.toLocaleString() + " characters";
   }
 
-  // ---- Preview ground switcher -------------------------------------------
   Array.prototype.forEach.call(document.querySelectorAll('input[name="ground"]'), function(r){
     r.addEventListener("change", function(){ $("stage").setAttribute("data-ground", r.value); });
   });
