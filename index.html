@@ -10,11 +10,14 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap">
 <style>
   :root{
-    --bg:#FCFBF7; --surface:#FFFFFF; --surface-2:#F3F1EC;
-    --ink:#0F0E0C; --muted:#6B6862; --line:#E4E1D8;
-    --accent:#5423E7; --accent-ink:#FFFFFF; --accent-soft:#EFEAFF;
-    --ok:#1F6B45; --ok-soft:#E4F2EA;
-    --warn:#8A5A00; --warn-soft:#FDF3DC; --warn-line:#E8D3A0;
+    --bg:#FCFBF7; --card:#FFFFFF; --sunk:#F5F3EC;
+    --ink:#0F0E0C; --muted:#6F6C65; --line:#E8E5DC; --line-soft:#F0EDE4;
+    --accent:#5423E7; --accent-soft:#EFEAFF;
+    --btn:#131210; --btn-ink:#FFFFFF;
+    --ok:#1F6B45; --warn:#8A5A00; --warn-soft:#FDF3DC; --warn-line:#EBD9AC;
+    --dot:rgba(15,14,12,.055);
+    --shadow:0 1px 2px rgba(15,14,12,.05), 0 10px 30px -14px rgba(15,14,12,.16);
+    --aura:.52;
     --sans:"Instrument Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     --serif:"Instrument Serif",Georgia,"Times New Roman",serif;
     --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
@@ -22,106 +25,135 @@
   }
   @media (prefers-color-scheme:dark){
     :root{
-      --bg:#100F0D; --surface:#191816; --surface-2:#211F1C;
-      --ink:#F4F2EC; --muted:#9B968C; --line:#2E2B26;
-      --accent:#A68BFF; --accent-ink:#17102E; --accent-soft:#241B45;
-      --ok:#7ED0A5; --ok-soft:#152A20;
-      --warn:#E8C27A; --warn-soft:#2E2515; --warn-line:#4A3C1C;
+      --bg:#0E0D0C; --card:#191816; --sunk:#141312;
+      --ink:#F4F2EC; --muted:#9B968C; --line:#2C2A26; --line-soft:#232120;
+      --accent:#A68BFF; --accent-soft:#241B45;
+      --btn:#F4F2EC; --btn-ink:#131210;
+      --ok:#7ED0A5; --warn:#E8C27A; --warn-soft:#2A2214; --warn-line:#463A1C;
+      --dot:rgba(255,255,255,.05);
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 34px -16px rgba(0,0,0,.7);
+      --aura:.30;
     }
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
-       line-height:1.5;-webkit-font-smoothing:antialiased}
+  html,body{height:auto}
+  body{
+    margin:0;background-color:var(--bg);color:var(--ink);font-family:var(--sans);
+    line-height:1.5;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(circle, var(--dot) 1px, transparent 1px);
+    background-size:22px 22px;background-position:-1px -1px;
+  }
+  body::before{
+    content:"";position:fixed;top:-140px;left:-5vw;right:-5vw;height:440px;
+    pointer-events:none;z-index:0;filter:blur(72px);opacity:var(--aura);
+    background:
+      radial-gradient(38% 62% at 10% 34%, #B9D6F2 0%, transparent 70%),
+      radial-gradient(34% 56% at 38% 10%, #C8E6CE 0%, transparent 70%),
+      radial-gradient(38% 60% at 64% 40%, #D6CAF0 0%, transparent 70%),
+      radial-gradient(34% 56% at 90% 14%, #F2DCC2 0%, transparent 70%);
+  }
   img{max-width:100%}
   [hidden]{display:none!important}
-  .wrap{max-width:1060px;margin:0 auto;padding-inline:20px;padding-block:44px 72px}
+  .wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;
+        padding-inline:20px;padding-block:46px 76px}
 
-  .masthead{margin-bottom:34px}
-  .masthead .logo{height:18px;width:auto;color:var(--ink);display:block;margin-bottom:22px}
-  .masthead h1{font-family:var(--serif);font-size:clamp(34px,5.5vw,48px);font-weight:400;
-    letter-spacing:-.012em;line-height:1.04;margin:0;text-wrap:balance}
+  /* ---- Masthead ---- */
+  .masthead{margin-bottom:34px;max-width:46ch}
+  .masthead .logo{height:18px;width:auto;color:var(--ink);display:block;margin-bottom:24px}
+  .masthead h1{font-family:var(--serif);font-size:clamp(36px,5.6vw,52px);font-weight:400;
+    letter-spacing:-.014em;line-height:1.02;margin:0;text-wrap:balance}
   .masthead h1 em{font-style:italic;color:var(--accent)}
-  .masthead p{margin:12px 0 0;color:var(--muted);font-size:15.5px;max-width:46ch}
+  .masthead p{margin:14px 0 0;color:var(--muted);font-size:15.5px}
 
-  .cols{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:44px;align-items:start}
-  @media (max-width:840px){.cols{grid-template-columns:1fr;gap:34px}}
+  /* ---- Panels ---- */
+  .cols{display:grid;grid-template-columns:minmax(0,362px) minmax(0,1fr);gap:24px;align-items:start}
+  @media (max-width:880px){.cols{grid-template-columns:1fr}}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:20px;
+         box-shadow:var(--shadow);padding:24px}
+  .panel + .panel{margin-top:24px}
+  .phead{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px}
+  .phead h2{font-size:12.5px;font-weight:600;letter-spacing:.04em;margin:0;color:var(--muted)}
 
-  .eyebrow{font-size:11px;font-weight:600;letter-spacing:.11em;text-transform:uppercase;
-    color:var(--muted);margin:0 0 16px}
-
-  form{display:flex;flex-direction:column;gap:17px}
+  /* ---- Form ---- */
+  form{display:flex;flex-direction:column;gap:16px}
   .field{display:flex;flex-direction:column;gap:6px}
   .field > label{font-size:13px;font-weight:600}
   .field > label .opt{color:var(--muted);font-weight:400}
   .hint{font-size:12px;color:var(--muted);line-height:1.5}
   input[type=text],input[type=email],input[type=tel],input[type=url]{
-    font-family:var(--sans);font-size:14px;color:var(--ink);background:var(--surface);
-    border:1px solid var(--line);border-radius:8px;padding:10px 12px;width:100%;
-    transition:border-color .12s,box-shadow .12s}
-  input::placeholder{color:var(--muted);opacity:.65}
-  input:focus-visible{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+    font-family:var(--sans);font-size:14px;color:var(--ink);background:var(--sunk);
+    border:1px solid transparent;border-radius:11px;padding:11px 13px;width:100%;
+    transition:border-color .14s,box-shadow .14s,background .14s}
+  input::placeholder{color:var(--muted);opacity:.62}
+  input:focus-visible{outline:none;background:var(--card);border-color:var(--accent);
+    box-shadow:0 0 0 3px var(--accent-soft)}
 
-  /* Headshot uploader */
   .drop{display:flex;align-items:center;gap:14px;border:1.5px dashed var(--line);
-    border-radius:10px;padding:13px 14px;background:var(--surface);cursor:pointer;
+    border-radius:14px;padding:12px 14px;background:var(--sunk);cursor:pointer;
     transition:border-color .14s,background .14s}
   .drop:hover,.drop.over{border-color:var(--accent);background:var(--accent-soft)}
   .drop:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-  .drop .disc{width:52px;height:52px;border-radius:50%;background:var(--surface-2);flex:none;
-    display:flex;align-items:center;justify-content:center;overflow:hidden;
-    border:1px solid var(--line)}
+  .drop .disc{width:50px;height:50px;border-radius:50%;background:var(--card);flex:none;
+    display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid var(--line)}
   .drop .disc img{width:100%;height:100%;object-fit:cover;display:block}
-  .drop .disc svg{width:24px;height:24px;color:var(--muted)}
-  .drop .dt{font-size:13px;font-weight:600}
-  .drop .dsub{font-size:11.5px;color:var(--muted);margin-top:2px;line-height:1.45}
+  .drop .disc svg{width:23px;height:23px;color:var(--muted)}
+  .drop .dt{font-size:13px;font-weight:600;display:block}
+  .drop .dsub{font-size:11.5px;color:var(--muted);margin-top:2px;line-height:1.45;display:block}
   .linkbtn{background:none;border:0;padding:0;font:inherit;font-size:11.5px;font-weight:600;
     color:var(--accent);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+  .linkbtn + .linkbtn{margin-left:12px}
   .linkbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
 
   .toggle{display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;font-weight:600}
   .toggle input{accent-color:var(--accent);width:16px;height:16px;flex:none;margin:0}
 
-  .note{border-radius:9px;padding:13px 15px;font-size:12.5px;line-height:1.55;
-    background:var(--warn-soft);border:1px solid var(--warn-line);color:var(--warn)}
+  .note{border-radius:13px;padding:13px 15px;font-size:12.5px;line-height:1.55;
+    background:var(--warn-soft);border:1px solid var(--warn-line);color:var(--warn);margin-top:18px}
   .note code{font-family:var(--mono);font-size:11.5px;background:rgba(127,127,127,.18);
     padding:1px 4px;border-radius:3px}
 
-  .previews{display:grid;grid-template-columns:1fr 1fr;gap:15px}
-  @media (max-width:620px){.previews{grid-template-columns:1fr}}
-  .screen{border:1px solid var(--line);border-radius:11px;overflow:hidden}
-  .screen .bar{font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
-    padding:8px 13px;border-bottom:1px solid var(--line);color:var(--muted);background:var(--surface-2)}
-  .stage{padding:24px 20px;overflow-x:auto}
-  .stage.light{background:#FFFFFF}
-  .stage.dark{background:#111111}
+  /* ---- Preview ---- */
+  .seg{display:inline-flex;gap:3px;background:var(--sunk);padding:3px;border-radius:10px}
+  .seg label{position:relative}
+  .seg input{position:absolute;opacity:0;pointer-events:none}
+  .seg span{display:block;font-size:12px;font-weight:600;padding:6px 13px;border-radius:8px;
+    cursor:pointer;color:var(--muted);transition:background .14s,color .14s;user-select:none}
+  .seg input:checked + span{background:var(--card);color:var(--ink);
+    box-shadow:0 1px 2px rgba(15,14,12,.09)}
+  .seg input:focus-visible + span{outline:2px solid var(--accent);outline-offset:1px}
 
-  .rowline{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:20px 0 0}
-  button.btn{font-family:var(--sans);font-size:13.5px;font-weight:600;border-radius:8px;
-    padding:11px 18px;cursor:pointer;border:1px solid transparent;transition:filter .12s,background .12s}
+  .stage{border-radius:14px;padding:32px 24px;display:flex;justify-content:center;
+    transition:background .2s;border:1px solid var(--line-soft)}
+  .stage[data-ground="light"]{background:#FFFFFF}
+  .stage[data-ground="dark"]{background:#111111;border-color:#111111}
+  .stage > div{max-width:100%;overflow-x:auto}
+
+  .rowline{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:20px}
+  button.btn{font-family:var(--sans);font-size:13.5px;font-weight:600;border-radius:12px;
+    padding:12px 20px;cursor:pointer;border:1px solid transparent;transition:filter .14s,background .14s}
   button.btn:active{transform:translateY(1px)}
   button.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-  .primary{background:var(--accent);color:var(--accent-ink)}
-  .primary:hover{filter:brightness(1.09)}
+  .primary{background:var(--btn);color:var(--btn-ink)}
+  .primary:hover{filter:brightness(1.22)}
   .ghost{background:transparent;color:var(--ink);border-color:var(--line)}
-  .ghost:hover{background:var(--surface-2)}
+  .ghost:hover{background:var(--sunk)}
   .status{font-size:12.5px;color:var(--ok);font-weight:600}
   .meter{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;margin-left:auto}
 
-  details{margin-top:26px;border-top:1px solid var(--line);padding-top:18px}
+  .install{margin-top:24px;padding-top:20px;border-top:1px solid var(--line-soft);
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(196px,1fr));gap:18px}
+  .install div{font-size:12.5px;color:var(--muted);line-height:1.55}
+  .install b{display:block;color:var(--ink);font-size:12.5px;margin-bottom:3px}
+
+  details{margin-top:20px;border-top:1px solid var(--line-soft);padding-top:16px}
   summary{cursor:pointer;font-size:12.5px;font-weight:600;color:var(--muted);list-style:none;
     display:inline-flex;align-items:center;gap:7px}
   summary::-webkit-details-marker{display:none}
   summary::before{content:"+";font-family:var(--mono);color:var(--accent)}
   details[open] summary::before{content:"\2212"}
   summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
-  pre{margin:14px 0 0;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;
-    padding:15px;overflow-x:auto;font-family:var(--mono);font-size:11px;line-height:1.7;
-    color:var(--ink);white-space:pre}
-
-  .install{margin-top:26px;padding-top:20px;border-top:1px solid var(--line);
-    display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px}
-  .install div{font-size:12.5px;color:var(--muted);line-height:1.55}
-  .install b{display:block;color:var(--ink);font-size:12.5px;margin-bottom:3px}
+  pre{margin:14px 0 0;background:var(--sunk);border-radius:12px;padding:15px;overflow-x:auto;
+    font-family:var(--mono);font-size:11px;line-height:1.7;color:var(--ink);white-space:pre}
   @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -135,86 +167,84 @@
 
   <div class="cols">
     <section>
-      <p class="eyebrow">Your details</p>
-      <form id="sigform" autocomplete="off">
-        <div class="field">
-          <label for="f-name">Full name</label>
-          <input id="f-name" type="text" value="Ana Ruiz" placeholder="Ana Ruiz">
-        </div>
-        <div class="field">
-          <label for="f-title">Job title</label>
-          <input id="f-title" type="text" value="Product Designer" placeholder="Product Designer">
-        </div>
-        <div class="field">
-          <label for="f-email">Email</label>
-          <input id="f-email" type="email" value="ana@maker.co" placeholder="ana@maker.co">
-        </div>
-        <div class="field">
-          <label for="f-phone">Phone <span class="opt">— optional</span></label>
-          <input id="f-phone" type="tel" value="" placeholder="+1 415 555 0134">
-        </div>
-
-        <div class="field">
-          <label for="f-drop">Photo <span class="opt">— optional</span></label>
-          <div class="drop" id="f-drop" tabindex="0" role="button" aria-label="Add a photo">
-            <span class="disc" id="d-disc">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="8.5" r="3.6"/><path d="M4.5 20.2a7.8 7.8 0 0 1 15 0" stroke-linecap="round"/></svg>
-            </span>
-            <span>
-              <span class="dt" id="d-title">Drop a photo or click to choose</span>
-              <span class="dsub" id="d-sub">Cropped to a circle and sized automatically.</span>
-            </span>
+      <div class="panel">
+        <div class="phead"><h2>Your details</h2></div>
+        <form id="sigform" autocomplete="off">
+          <div class="field">
+            <label for="f-name">Full name</label>
+            <input id="f-name" type="text" value="Ana Ruiz" placeholder="Ana Ruiz">
           </div>
-          <input type="file" id="f-file" accept="image/*" hidden>
-          <span class="hint">
-            <button type="button" class="linkbtn" id="d-clear" hidden>Remove photo</button>
-            <button type="button" class="linkbtn" id="d-paste">Paste a link instead</button>
-          </span>
-          <input id="f-photo" type="url" placeholder="https://…/your-photo.png" hidden>
+          <div class="field">
+            <label for="f-title">Job title</label>
+            <input id="f-title" type="text" value="Product Designer" placeholder="Product Designer">
+          </div>
+          <div class="field">
+            <label for="f-email">Email</label>
+            <input id="f-email" type="email" value="ana@maker.co" placeholder="ana@maker.co">
+          </div>
+          <div class="field">
+            <label for="f-phone">Phone <span class="opt">— optional</span></label>
+            <input id="f-phone" type="tel" value="" placeholder="+1 415 555 0134">
+          </div>
+          <div class="field">
+            <label for="f-drop">Photo <span class="opt">— optional</span></label>
+            <div class="drop" id="f-drop" tabindex="0" role="button" aria-label="Add a photo">
+              <span class="disc" id="d-disc">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="8.5" r="3.6"/><path d="M4.5 20.2a7.8 7.8 0 0 1 15 0" stroke-linecap="round"/></svg>
+              </span>
+              <span>
+                <span class="dt" id="d-title">Drop a photo or click to choose</span>
+                <span class="dsub" id="d-sub">Cropped to a circle and sized automatically.</span>
+              </span>
+            </div>
+            <input type="file" id="f-file" accept="image/*" hidden>
+            <span class="hint">
+              <button type="button" class="linkbtn" id="d-paste">Paste a link instead</button>
+              <button type="button" class="linkbtn" id="d-clear" hidden>Remove photo</button>
+            </span>
+            <input id="f-photo" type="url" placeholder="https://…/your-photo.png" hidden>
+          </div>
+          <label class="toggle" for="f-social">
+            <input type="checkbox" id="f-social"> Include social icons
+          </label>
+        </form>
+        <div class="note" id="cfg-note" hidden>
+          <strong>Uploads aren't switched on yet.</strong> Add an unsigned Cloudinary upload
+          preset name to <code>CLOUDINARY.preset</code> in the script. Until then, use
+          <em>Paste a link instead</em>.
         </div>
-
-        <label class="toggle" for="f-social">
-          <input type="checkbox" id="f-social"> Include social icons
-        </label>
-      </form>
-
-      <div class="note" id="cfg-note" style="margin-top:20px" hidden>
-        <strong>Uploads aren't switched on yet.</strong> Create an unsigned upload preset in
-        Cloudinary and put its name in <code>CLOUDINARY.preset</code> at the top of the script.
-        Until then, use <em>Paste a link instead</em>.
       </div>
     </section>
 
     <section>
-      <p class="eyebrow">Preview</p>
-      <div class="previews">
-        <div class="screen">
-          <div class="bar">Light background</div>
-          <div class="stage light"><div id="prev-light"></div></div>
+      <div class="panel">
+        <div class="phead">
+          <h2>Preview</h2>
+          <div class="seg" role="radiogroup" aria-label="Preview background">
+            <label><input type="radio" name="ground" value="light" checked><span>Light</span></label>
+            <label><input type="radio" name="ground" value="dark"><span>Dark</span></label>
+          </div>
         </div>
-        <div class="screen">
-          <div class="bar">Dark background</div>
-          <div class="stage dark"><div id="prev-dark"></div></div>
+        <div class="stage" id="stage" data-ground="light"><div id="prev"></div></div>
+
+        <div class="rowline">
+          <button type="button" class="btn primary" id="btn-rich">Copy signature</button>
+          <button type="button" class="btn ghost" id="btn-html">Copy HTML</button>
+          <span class="status" id="status" hidden></span>
+          <span class="meter" id="meter"></span>
         </div>
-      </div>
 
-      <div class="rowline">
-        <button type="button" class="btn primary" id="btn-rich">Copy signature</button>
-        <button type="button" class="btn ghost" id="btn-html">Copy HTML</button>
-        <span class="status" id="status" hidden></span>
-        <span class="meter" id="meter"></span>
-      </div>
+        <div class="install">
+          <div><b>Gmail</b>Settings → See all settings → Signature. Paste, then Save Changes at the bottom.</div>
+          <div><b>Outlook</b>Settings → Mail → Compose and reply. Paste into the signature box.</div>
+          <div><b>Apple Mail</b>Settings → Signatures. Paste, then untick “Always match my default message font”.</div>
+        </div>
 
-      <div class="install">
-        <div><b>Gmail</b>Settings → See all settings → Signature. Paste, then Save Changes at the bottom.</div>
-        <div><b>Outlook</b>Settings → Mail → Compose and reply. Paste into the signature box.</div>
-        <div><b>Apple Mail</b>Settings → Signatures. Paste, then untick “Always match my default message font”.</div>
+        <details>
+          <summary>HTML source</summary>
+          <pre id="source"></pre>
+        </details>
       </div>
-
-      <details>
-        <summary>HTML source</summary>
-        <pre id="source"></pre>
-      </details>
     </section>
   </div>
 </div>
@@ -223,9 +253,9 @@
 (function(){
   "use strict";
 
-  // ---- Config -------------------------------------------------------------
-  // preset: name of an UNSIGNED Cloudinary upload preset. Leave "" to disable
-  // uploading and fall back to pasting a URL.
+  // preset: name of an UNSIGNED Cloudinary upload preset. "" disables uploading
+  // and falls back to pasting a URL. Never put an API key or secret here — this
+  // file is public.
   var CLOUDINARY = { cloud:"y1jdutly", preset:"" };
 
   var CDN  = "https://res.cloudinary.com/y1jdutly/image/upload";
@@ -250,7 +280,6 @@
   }
   var attr = function(s){ return esc(s).replace(/'/g,"&#39;"); };
 
-  // ---- Signature markup ---------------------------------------------------
   function build(){
     var name  = $("f-name").value.trim()  || "Full Name";
     var title = $("f-title").value.trim();
@@ -310,13 +339,17 @@
 
   function render(){
     var html = build();
-    $("prev-light").innerHTML = html;
-    $("prev-dark").innerHTML  = html;
-    $("source").textContent   = html;
-    $("meter").textContent    = html.length.toLocaleString() + " characters";
+    $("prev").innerHTML     = html;
+    $("source").textContent = html;
+    $("meter").textContent  = html.length.toLocaleString() + " characters";
   }
 
-  // ---- Photo: crop to a circle on the card colour, then upload ------------
+  // ---- Preview ground switcher -------------------------------------------
+  Array.prototype.forEach.call(document.querySelectorAll('input[name="ground"]'), function(r){
+    r.addEventListener("change", function(){ $("stage").setAttribute("data-ground", r.value); });
+  });
+
+  // ---- Photo --------------------------------------------------------------
   function processFile(file){
     if (!file || !/^image\//.test(file.type)) return;
     setDrop("Preparing…", "Cropping and resizing.");
@@ -345,7 +378,7 @@
 
   function upload(blob){
     if (!CLOUDINARY.preset) {
-      setDrop("Upload not configured", "Use “Paste a link instead” below.");
+      setDrop("Upload not switched on", "Use “Paste a link instead”.");
       $("cfg-note").hidden = false;
       return;
     }
@@ -362,21 +395,15 @@
         $("d-clear").hidden = false;
         render();
       })
-      .catch(function(){
-        setDrop("Upload failed", "Use “Paste a link instead” below.");
-      });
+      .catch(function(){ setDrop("Upload failed", "Use “Paste a link instead”."); });
   }
 
-  function showDisc(src){
-    $("d-disc").innerHTML = '<img src="' + src + '" alt="">';
-  }
+  function showDisc(src){ $("d-disc").innerHTML = '<img src="' + src + '" alt="">'; }
   function setDrop(t, s){ $("d-title").textContent = t; $("d-sub").textContent = s; }
 
   function clearPhoto(){
     photoUrl = "";
-    $("f-photo").value = "";
-    $("f-photo").hidden = true;
-    $("d-clear").hidden = true;
+    $("f-photo").value = ""; $("f-photo").hidden = true; $("d-clear").hidden = true;
     $("d-disc").innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="8.5" r="3.6"/><path d="M4.5 20.2a7.8 7.8 0 0 1 15 0" stroke-linecap="round"/></svg>';
     setDrop("Drop a photo or click to choose", "Cropped to a circle and sized automatically.");
     render();
@@ -399,9 +426,7 @@
   $("f-file").addEventListener("change", function(e){ processFile(e.target.files[0]); });
   $("d-clear").addEventListener("click", clearPhoto);
   $("d-paste").addEventListener("click", function(){
-    var f = $("f-photo");
-    f.hidden = !f.hidden;
-    if (!f.hidden) f.focus();
+    var f = $("f-photo"); f.hidden = !f.hidden; if (!f.hidden) f.focus();
   });
   $("f-photo").addEventListener("input", function(){
     photoUrl = $("f-photo").value.trim();
@@ -413,8 +438,7 @@
   var timer;
   function flash(msg){
     clearTimeout(timer);
-    var s = $("status");
-    s.textContent = msg; s.hidden = false;
+    var s = $("status"); s.textContent = msg; s.hidden = false;
     timer = setTimeout(function(){ s.hidden = true; }, 2600);
   }
   function legacy(text, msg){
@@ -426,14 +450,14 @@
     document.body.removeChild(ta);
   }
   function selectNode(){
-    var n = $("prev-light"), r = document.createRange();
+    var n = $("prev"), r = document.createRange();
     r.selectNodeContents(n);
     var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
     try { document.execCommand("copy"); flash("Copied — now paste it into your email settings"); }
     catch(e){ flash("Press Ctrl/Cmd+C to copy the selection"); }
   }
   $("btn-rich").addEventListener("click", function(){
-    var html = build(), plain = $("prev-light").innerText;
+    var html = build(), plain = $("prev").innerText;
     if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
       navigator.clipboard.write([ new ClipboardItem({
         "text/html":  new Blob([html],  { type:"text/html"  }),
@@ -451,7 +475,6 @@
 
   $("sigform").addEventListener("input", render);
   $("sigform").addEventListener("change", render);
-  if (!CLOUDINARY.preset) $("d-sub").textContent = "Cropped to a circle automatically.";
   render();
 })();
 </script>
