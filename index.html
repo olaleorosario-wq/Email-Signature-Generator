@@ -122,6 +122,9 @@
   .stage[data-ground="light"]{background:#FFFFFF}
   .stage[data-ground="dark"]{background:#111111;border-color:#111111}
   .stage > div{max-width:100%;overflow-x:auto}
+  /* The preview must not rescale the signature's images — a clamped width with a
+     fixed height attribute silently distorts them, and hides real sizing bugs. */
+  #prev img{max-width:none}
 
   .rowline{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:20px}
   button.btn{font-family:var(--sans);font-size:13.5px;font-weight:600;border-radius:12px;
@@ -344,13 +347,15 @@
     lines.push('<a href="https://maker.co" style="color:' + ACCENT + ';text-decoration:none;font-weight:bold;">maker.co</a>');
     text += '<div style="font-size:13px;line-height:20px;padding-top:10px;">' + lines.join('<br>') + '</div>';
 
-    // Details left, portrait hard right.
+    // Details left, portrait hard right. The text cell claims all the slack and
+    // carries the gutter, so the portrait cell is exactly the image — never a
+    // declared width fighting its own padding, which squashes the circle.
     var identity = photoUrl
       ? '<table cellpadding="0" cellspacing="0" border="0" width="100%"><tr>'
-        + '<td style="vertical-align:top;">' + text + '</td>'
-        + '<td align="right" width="62" style="width:62px;vertical-align:top;padding-left:16px;">'
+        + '<td width="100%" style="vertical-align:top;padding-right:16px;">' + text + '</td>'
+        + '<td align="right" style="vertical-align:top;font-size:0;line-height:0;">'
         + '<img src="' + attr(photoUrl) + '" alt="' + attr(name) + '" width="62" height="62"'
-        + ' style="display:block;border:0;border-radius:31px;"></td>'
+        + ' style="display:block;border:0;width:62px;height:62px;border-radius:31px;"></td>'
         + '</tr></table>'
       : text;
 
