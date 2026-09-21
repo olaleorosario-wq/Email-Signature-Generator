@@ -64,7 +64,11 @@
   .masthead p{margin:14px 0 0;color:var(--muted);font-size:15.5px}
 
   .cols{display:grid;grid-template-columns:minmax(0,362px) minmax(0,1fr);gap:24px;align-items:start}
-  @media (max-width:880px){.cols{grid-template-columns:1fr}}
+  /* Grid items default to min-width:auto and, like the flex item inside the
+     stage, will not shrink below the signature's width — which widens the
+     whole document on a phone. Both need min-width:0 for the page to hold. */
+  .cols > *{min-width:0}
+  @media (max-width:880px){.cols{grid-template-columns:minmax(0,1fr)}}
   .panel{background:var(--card);border:1px solid var(--line);border-radius:20px;
          box-shadow:var(--shadow);padding:24px}
   .panel + .panel{margin-top:24px}
