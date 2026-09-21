@@ -397,33 +397,41 @@
     // is stripped.
     var logo = '<img src="' + attr(LOGO) + '" alt="Maker" width="82" height="16"'
              + ' style="display:block;border:0;">';
+    // Exactly two columns, and both rows use the same two, so the wide left
+    // column holds the details and the icons while the narrow right column
+    // holds the portrait and the wordmark.
     var socialOn = $("f-social").checked;
-    var n  = Math.max(socialOn ? SOCIALS.length + 1 : 1, photoUrl ? 2 : 1);
+    var n  = (photoUrl || socialOn) ? 2 : 1;
     var bg = ' bgcolor="' + CARD + '"';
     var fill = 'background-color:' + CARD + ';';
 
     var idRow = photoUrl
       ? '      <tr>\n'
-        + '        <td colspan="' + (n - 1) + '" width="100%"' + bg + ' style="' + fill
+        + '        <td width="100%"' + bg + ' style="' + fill
         + 'width:100%;vertical-align:top;padding-right:16px;">' + text + '</td>\n'
         + '        <td align="right"' + bg + ' style="' + fill
         + 'vertical-align:top;font-size:0;line-height:0;">'
         + '<img src="' + attr(photoUrl) + '" alt="' + attr(name) + '" width="62" height="62"'
         + ' style="display:block;border:0;width:62px;height:62px;border-radius:31px;"></td>\n'
         + '      </tr>\n'
-      : '      <tr><td colspan="' + n + '"' + bg + ' style="' + fill
-        + 'vertical-align:top;">' + text + '</td></tr>\n';
+      : '      <tr><td colspan="' + n + '" width="100%"' + bg + ' style="' + fill
+        + 'width:100%;vertical-align:top;">' + text + '</td></tr>\n';
 
     var rule = 'border-top:1px solid ' + RULE + ';padding-top:16px;vertical-align:middle;';
     var footRow = '      <tr>\n';
     if (socialOn) {
-      footRow += SOCIALS.map(function(s, i){
-        return '        <td' + bg + ' style="' + fill + rule
-             + 'padding-right:' + (i === SOCIALS.length - 1 ? 0 : 9) + 'px;">'
-             + '<a href="' + attr(s.url) + '"><img src="' + attr(s.src) + '" alt="' + attr(s.name)
-             + '" width="28" height="28" style="display:block;border:0;"></a></td>\n';
+      // All four icons sit in ONE cell as inline images. Giving each its own
+      // column let the table hand them the text column's slack, which fanned
+      // them across the full width of the card on Gmail mobile.
+      var icons = SOCIALS.map(function(s, i){
+        return '<a href="' + attr(s.url) + '"><img src="' + attr(s.src) + '" alt="' + attr(s.name)
+             + '" width="28" height="28" style="display:inline-block;border:0;'
+             + 'vertical-align:middle;margin-right:'
+             + (i === SOCIALS.length - 1 ? 0 : 14) + 'px;"></a>';
       }).join("");
-      footRow += '        <td align="right"' + bg + ' style="' + fill + rule + '">' + logo + '</td>\n';
+      footRow += '        <td width="100%"' + bg + ' style="' + fill + rule
+               + 'width:100%;font-size:0;line-height:0;">' + icons + '</td>\n'
+               + '        <td align="right"' + bg + ' style="' + fill + rule + '">' + logo + '</td>\n';
     } else {
       footRow += '        <td colspan="' + n + '"' + bg + ' style="' + fill + rule + '">'
                + logo + '</td>\n';
