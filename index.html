@@ -177,15 +177,15 @@
         <form id="sigform" autocomplete="off">
           <div class="field">
             <label for="f-name">Full name</label>
-            <input id="f-name" type="text" value="Leo Rosário" placeholder="Leo Rosário">
+            <input id="f-name" type="text" value="Your Name" placeholder="Your Name">
           </div>
           <div class="field">
             <label for="f-title">Job title</label>
-            <input id="f-title" type="text" value="Lead Designer" placeholder="Lead Designer">
+            <input id="f-title" type="text" value="Your Job Title" placeholder="Your Job Title">
           </div>
           <div class="field">
             <label for="f-email">Email</label>
-            <input id="f-email" type="email" value="leo@maker.co" placeholder="leo@maker.co">
+            <input id="f-email" type="email" value="you@maker.co" placeholder="you@maker.co">
           </div>
           <div class="field">
             <label for="f-phone">Phone <span class="opt">— optional</span></label>
@@ -376,10 +376,13 @@
       footer = '<td style="vertical-align:middle;">' + logo + '</td>';
     }
 
+    // 340px fits a 360px phone viewport and Gmail's signature box, which are the
+    // two narrowest places this lands. max-width lets it shrink below that where
+    // it is supported; Outlook ignores max-width and holds 340, which is fine.
     return ''
-      + '<table cellpadding="0" cellspacing="0" border="0" width="392" bgcolor="' + CARD + '"'
-      + ' style="width:392px;background-color:' + CARD + ';border-radius:10px;font-family:' + SANS + ';">\n'
-      + '  <tr><td style="padding:22px 24px;">\n'
+      + '<table cellpadding="0" cellspacing="0" border="0" width="340" bgcolor="' + CARD + '"'
+      + ' style="width:340px;max-width:100%;background-color:' + CARD + ';border-radius:10px;font-family:' + SANS + ';">\n'
+      + '  <tr><td style="padding:20px 22px;">\n'
       + '    ' + identity + '\n'
       + '    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:18px;">\n'
       + '      <tr><td height="1" bgcolor="' + RULE + '" style="height:1px;line-height:1px;font-size:0;">&nbsp;</td></tr>\n'
