@@ -3,155 +3,139 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Generate a table-based HTML email signature that survives Outlook, Gmail image blocking and dark mode.">
-<style>:root{color-scheme:light dark}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<meta name="description" content="Generate your Maker email signature in under a minute. Table-based HTML that survives Outlook, Gmail image blocking and dark mode.">
 <title>Maker Signature Builder</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap">
 <style>
   :root{
     --bg:#FCFBF7; --surface:#FFFFFF; --surface-2:#F3F1EC;
     --ink:#0F0E0C; --muted:#6B6862; --line:#E4E1D8;
     --accent:#5423E7; --accent-ink:#FFFFFF; --accent-soft:#EFEAFF;
-    --warn:#8A5A00; --warn-soft:#FDF3DC; --warn-line:#E8D3A0;
     --ok:#1F6B45; --ok-soft:#E4F2EA;
-    --sans:"Hanken Grotesk",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --warn:#8A5A00; --warn-soft:#FDF3DC; --warn-line:#E8D3A0;
+    --sans:"Instrument Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --serif:"Instrument Serif",Georgia,"Times New Roman",serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    color-scheme:light dark;
   }
   @media (prefers-color-scheme:dark){
-    :root:not([data-theme="light"]){
+    :root{
       --bg:#100F0D; --surface:#191816; --surface-2:#211F1C;
       --ink:#F4F2EC; --muted:#9B968C; --line:#2E2B26;
       --accent:#A68BFF; --accent-ink:#17102E; --accent-soft:#241B45;
-      --warn:#E8C27A; --warn-soft:#2E2515; --warn-line:#4A3C1C;
       --ok:#7ED0A5; --ok-soft:#152A20;
+      --warn:#E8C27A; --warn-soft:#2E2515; --warn-line:#4A3C1C;
     }
   }
-  :root[data-theme="dark"]{
-    --bg:#100F0D; --surface:#191816; --surface-2:#211F1C;
-    --ink:#F4F2EC; --muted:#9B968C; --line:#2E2B26;
-    --accent:#A68BFF; --accent-ink:#17102E; --accent-soft:#241B45;
-    --warn:#E8C27A; --warn-soft:#2E2515; --warn-line:#4A3C1C;
-    --ok:#7ED0A5; --ok-soft:#152A20;
-  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+       line-height:1.5;-webkit-font-smoothing:antialiased}
+  img{max-width:100%}
+  [hidden]{display:none!important}
+  .wrap{max-width:1060px;margin:0 auto;padding-inline:20px;padding-block:44px 72px}
 
-  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
-       -webkit-font-smoothing:antialiased;line-height:1.5;}
-  .wrap{max-width:1140px;margin:0 auto;padding-inline:20px;padding-block:40px 64px;}
+  .masthead{margin-bottom:34px}
+  .masthead .logo{height:18px;width:auto;color:var(--ink);display:block;margin-bottom:22px}
+  .masthead h1{font-family:var(--serif);font-size:clamp(34px,5.5vw,48px);font-weight:400;
+    letter-spacing:-.012em;line-height:1.04;margin:0;text-wrap:balance}
+  .masthead h1 em{font-style:italic;color:var(--accent)}
+  .masthead p{margin:12px 0 0;color:var(--muted);font-size:15.5px;max-width:46ch}
 
-  header.masthead{display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px 28px;
-    padding-bottom:24px;border-bottom:1px solid var(--line);margin-bottom:32px;}
-  .logo{height:19px;width:auto;color:var(--ink);display:block;flex:none;}
-  .masthead h1{font-size:clamp(26px,4vw,34px);font-weight:700;letter-spacing:-.022em;
-    margin:0;text-wrap:balance;line-height:1.12;}
-  .masthead p{margin:6px 0 0;color:var(--muted);font-size:15px;max-width:54ch;}
-  .masthead .titles{flex:1 1 320px;}
-
-  .cols{display:grid;grid-template-columns:minmax(0,348px) minmax(0,1fr);gap:40px;align-items:start;}
-  @media (max-width:860px){.cols{grid-template-columns:1fr;gap:32px;}}
+  .cols{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:44px;align-items:start}
+  @media (max-width:840px){.cols{grid-template-columns:1fr;gap:34px}}
 
   .eyebrow{font-size:11px;font-weight:600;letter-spacing:.11em;text-transform:uppercase;
-    color:var(--muted);margin:0 0 14px;}
+    color:var(--muted);margin:0 0 16px}
 
-  form{display:flex;flex-direction:column;gap:18px;}
-  .field{display:flex;flex-direction:column;gap:6px;}
-  .field label{font-size:13px;font-weight:600;letter-spacing:-.005em;}
-  .field label .opt{color:var(--muted);font-weight:400;}
-  .hint{font-size:12px;color:var(--muted);line-height:1.45;}
+  form{display:flex;flex-direction:column;gap:17px}
+  .field{display:flex;flex-direction:column;gap:6px}
+  .field > label{font-size:13px;font-weight:600}
+  .field > label .opt{color:var(--muted);font-weight:400}
+  .hint{font-size:12px;color:var(--muted);line-height:1.5}
   input[type=text],input[type=email],input[type=tel],input[type=url]{
-    font-family:var(--sans);font-size:14px;color:var(--ink);
-    background:var(--surface);border:1px solid var(--line);border-radius:7px;
-    padding:10px 12px;width:100%;box-sizing:border-box;transition:border-color .12s,box-shadow .12s;}
-  input::placeholder{color:var(--muted);opacity:.7;}
-  input:focus-visible{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);}
+    font-family:var(--sans);font-size:14px;color:var(--ink);background:var(--surface);
+    border:1px solid var(--line);border-radius:8px;padding:10px 12px;width:100%;
+    transition:border-color .12s,box-shadow .12s}
+  input::placeholder{color:var(--muted);opacity:.65}
+  input:focus-visible{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 
-  .seg{display:flex;gap:6px;background:var(--surface-2);padding:4px;border-radius:8px;
-    border:1px solid var(--line);}
-  .seg label{flex:1;position:relative;}
-  .seg input{position:absolute;opacity:0;pointer-events:none;}
-  .seg span{display:block;text-align:center;font-size:12.5px;font-weight:600;padding:7px 8px;
-    border-radius:5px;cursor:pointer;color:var(--muted);transition:background .12s,color .12s;}
-  .seg input:checked + span{background:var(--surface);color:var(--ink);
-    box-shadow:0 1px 2px rgba(0,0,0,.07);}
-  .seg input:focus-visible + span{outline:2px solid var(--accent);outline-offset:1px;}
+  /* Headshot uploader */
+  .drop{display:flex;align-items:center;gap:14px;border:1.5px dashed var(--line);
+    border-radius:10px;padding:13px 14px;background:var(--surface);cursor:pointer;
+    transition:border-color .14s,background .14s}
+  .drop:hover,.drop.over{border-color:var(--accent);background:var(--accent-soft)}
+  .drop:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .drop .disc{width:52px;height:52px;border-radius:50%;background:var(--surface-2);flex:none;
+    display:flex;align-items:center;justify-content:center;overflow:hidden;
+    border:1px solid var(--line)}
+  .drop .disc img{width:100%;height:100%;object-fit:cover;display:block}
+  .drop .disc svg{width:24px;height:24px;color:var(--muted)}
+  .drop .dt{font-size:13px;font-weight:600}
+  .drop .dsub{font-size:11.5px;color:var(--muted);margin-top:2px;line-height:1.45}
+  .linkbtn{background:none;border:0;padding:0;font:inherit;font-size:11.5px;font-weight:600;
+    color:var(--accent);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+  .linkbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
 
-  .toggle{display:flex;align-items:flex-start;gap:10px;cursor:pointer;}
-  .toggle input{margin:2px 0 0;accent-color:var(--accent);width:16px;height:16px;flex:none;}
-  .toggle .tl{font-size:13px;font-weight:600;}
+  .toggle{display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;font-weight:600}
+  .toggle input{accent-color:var(--accent);width:16px;height:16px;flex:none;margin:0}
 
-  details{border:1px solid var(--line);border-radius:9px;background:var(--surface-2);}
-  summary{cursor:pointer;font-size:12.5px;font-weight:600;padding:11px 14px;list-style:none;
-    display:flex;align-items:center;justify-content:space-between;gap:10px;}
-  summary::-webkit-details-marker{display:none;}
-  summary::after{content:"+";font-family:var(--mono);color:var(--muted);font-size:14px;}
-  details[open] summary::after{content:"\2212";}
-  summary:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;border-radius:9px;}
-  .assetgrid{display:flex;flex-direction:column;gap:11px;padding:4px 14px 14px;}
-  .assetgrid .field label{font-size:11.5px;font-weight:500;color:var(--muted);
-    font-family:var(--mono);}
-  .assetgrid input{font-size:12px;padding:8px 10px;}
+  .note{border-radius:9px;padding:13px 15px;font-size:12.5px;line-height:1.55;
+    background:var(--warn-soft);border:1px solid var(--warn-line);color:var(--warn)}
+  .note code{font-family:var(--mono);font-size:11.5px;background:rgba(127,127,127,.18);
+    padding:1px 4px;border-radius:3px}
 
-  .note{background:var(--surface-2);border:1px solid var(--line);border-radius:9px;
-    padding:14px 16px;font-size:12.5px;color:var(--muted);line-height:1.55;}
-  .note.alert{background:var(--warn-soft);border-color:var(--warn-line);color:var(--warn);}
-  .note strong{color:var(--ink);font-weight:600;}
-  .note.alert strong{color:var(--warn);}
-  .note code,.step code{font-family:var(--mono);font-size:11.5px;background:rgba(127,127,127,.15);
-    padding:1px 4px;border-radius:3px;}
+  .previews{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+  @media (max-width:620px){.previews{grid-template-columns:1fr}}
+  .screen{border:1px solid var(--line);border-radius:11px;overflow:hidden}
+  .screen .bar{font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+    padding:8px 13px;border-bottom:1px solid var(--line);color:var(--muted);background:var(--surface-2)}
+  .stage{padding:24px 20px;overflow-x:auto}
+  .stage.light{background:#FFFFFF}
+  .stage.dark{background:#111111}
 
-  .previews{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
-  @media (max-width:640px){.previews{grid-template-columns:1fr;}}
-  .screen{border:1px solid var(--line);border-radius:10px;overflow:hidden;}
-  .screen .bar{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;
-    padding:8px 13px;border-bottom:1px solid var(--line);color:var(--muted);background:var(--surface-2);}
-  .stage{padding:22px 20px;overflow-x:auto;}
-  .stage.light{background:#FFFFFF;}
-  .stage.dark{background:#111111;}
+  .rowline{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:20px 0 0}
+  button.btn{font-family:var(--sans);font-size:13.5px;font-weight:600;border-radius:8px;
+    padding:11px 18px;cursor:pointer;border:1px solid transparent;transition:filter .12s,background .12s}
+  button.btn:active{transform:translateY(1px)}
+  button.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .primary{background:var(--accent);color:var(--accent-ink)}
+  .primary:hover{filter:brightness(1.09)}
+  .ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+  .ghost:hover{background:var(--surface-2)}
+  .status{font-size:12.5px;color:var(--ok);font-weight:600}
+  .meter{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;margin-left:auto}
 
-  .rowline{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:24px;}
-  button{font-family:var(--sans);font-size:13.5px;font-weight:600;letter-spacing:-.005em;
-    border-radius:7px;padding:10px 16px;cursor:pointer;border:1px solid transparent;
-    transition:transform .08s,filter .12s,background .12s;}
-  button:active{transform:translateY(1px);}
-  button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
-  .primary{background:var(--accent);color:var(--accent-ink);}
-  .primary:hover{filter:brightness(1.08);}
-  .ghost{background:transparent;color:var(--ink);border-color:var(--line);}
-  .ghost:hover{background:var(--surface-2);}
-  .status{font-size:12.5px;color:var(--ok);font-weight:600;}
-  .meter{display:inline-flex;align-items:center;font-size:12px;background:var(--ok-soft);
-    color:var(--ok);padding:6px 11px;border-radius:99px;font-weight:600;
-    font-variant-numeric:tabular-nums;}
-  .meter[data-over="1"]{background:var(--warn-soft);color:var(--warn);}
+  details{margin-top:26px;border-top:1px solid var(--line);padding-top:18px}
+  summary{cursor:pointer;font-size:12.5px;font-weight:600;color:var(--muted);list-style:none;
+    display:inline-flex;align-items:center;gap:7px}
+  summary::-webkit-details-marker{display:none}
+  summary::before{content:"+";font-family:var(--mono);color:var(--accent)}
+  details[open] summary::before{content:"\2212"}
+  summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
+  pre{margin:14px 0 0;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;
+    padding:15px;overflow-x:auto;font-family:var(--mono);font-size:11px;line-height:1.7;
+    color:var(--ink);white-space:pre}
 
-  pre{margin:0;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;
-    padding:16px;overflow-x:auto;font-family:var(--mono);font-size:11.5px;line-height:1.65;
-    color:var(--ink);white-space:pre;tab-size:2;}
-
-  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:20px;
-    margin-top:40px;padding-top:28px;border-top:1px solid var(--line);}
-  .step h3{font-size:13.5px;margin:0 0 5px;font-weight:600;}
-  .step h3 span{color:var(--accent);font-family:var(--mono);font-size:12px;margin-right:7px;}
-  .step p{margin:0;font-size:13px;color:var(--muted);line-height:1.55;}
-  .step strong{color:var(--ink);font-weight:600;}
-  @media (prefers-reduced-motion:reduce){*{transition:none!important;}}
+  .install{margin-top:26px;padding-top:20px;border-top:1px solid var(--line);
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px}
+  .install div{font-size:12.5px;color:var(--muted);line-height:1.55}
+  .install b{display:block;color:var(--ink);font-size:12.5px;margin-bottom:3px}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
-
 </head>
 <body>
 <div class="wrap">
   <header class="masthead">
     <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 122.51 24" fill="currentColor" role="img" aria-label="Maker"><polygon points="83.68 .63 76.64 .63 69.84 10.72 69.84 .66 63.72 .66 63.72 23.33 69.84 23.33 69.84 12.48 77.1 23.33 84.52 23.33 76.01 11.47 83.68 .63"></polygon><path d="M54.84,2.77c-1.88-1.72-4.32-2.77-7.12-2.77-6.48,0-11.32,5.13-11.32,11.98s4.84,12.02,11.32,12.02c2.76,0,5.16-1.01,7-2.73l.52,2.06h4.94V.63h-4.74l-.6,2.14Zm-6.64,15.43c-3.4,0-5.88-2.69-5.88-6.22s2.48-6.22,5.88-6.22,5.88,2.65,5.88,6.22-2.48,6.22-5.88,6.22Z"></path><path d="M120.5,.5c-2.94,0-4.95,.92-6.58,2.94l-1.09-2.82h-3.9V23.33h6.12V11.56c0-3.7,1.34-5.25,4.78-5.25h2.68V.5h-2.01Z"></path><path d="M25.74,.13c-2.89,0-5.45,1.43-7,3.61C17.4,1.47,15.05,.13,12.16,.13,9.48,.13,7,1.43,5.41,3.45L4.28,.63H0V23.33H6.12V11.05c0-3.53,1.64-5.55,4.4-5.55,2.18,0,3.35,1.6,3.35,4.62v13.2h5.95V11.05c0-3.53,1.64-5.55,4.36-5.55,2.22,0,3.4,1.6,3.4,4.62v13.2h6.12V9.12C33.71,3.78,30.44,.13,25.74,.13Z"></path><path d="M94.67,0c-6.71,0-11.74,5.17-11.74,11.98s5.07,12.02,11.74,12.02c5.28,0,9.6-3.15,11.24-8.11h-6.42c-.92,1.64-2.68,2.65-4.82,2.65-2.98,0-4.99-1.72-5.53-4.83h17.15c.08-.59,.13-1.18,.13-1.77,0-6.56-4.78-11.94-11.74-11.94Zm-5.37,9.54c.71-2.69,2.64-4.29,5.37-4.29s4.74,1.51,5.62,4.29h-10.99Z"></path></svg>
-    <div class="titles">
-      <h1>Signature Builder</h1>
-      <p>Fill in the details, check both grounds, copy. Table-based HTML that survives Outlook, Gmail image blocking, and dark mode.</p>
-    </div>
+    <h1>Your signature,<br><em>in about a minute</em></h1>
+    <p>Fill in your details, add a photo, copy. Paste it straight into Gmail, Outlook or Apple Mail — no file to download, nothing to install.</p>
   </header>
 
   <div class="cols">
     <section>
-      <p class="eyebrow">Per person</p>
+      <p class="eyebrow">Your details</p>
       <form id="sigform" autocomplete="off">
         <div class="field">
           <label for="f-name">Full name</label>
@@ -168,54 +152,36 @@
         <div class="field">
           <label for="f-phone">Phone <span class="opt">— optional</span></label>
           <input id="f-phone" type="tel" value="" placeholder="+1 415 555 0134">
-          <span class="hint">Blank drops the line entirely.</span>
-        </div>
-        <div class="field">
-          <label for="f-photo">Headshot URL <span class="opt">— optional</span></label>
-          <input id="f-photo" type="url" value="" placeholder="https://res.cloudinary.com/…/ana.png">
-          <span class="hint">Export 192×192, <strong style="color:var(--ink);font-weight:600">circle already masked into the PNG</strong> on a <code>#F3F1EC</code> ground — Outlook ignores <code>border-radius</code>, so a square file stays square.</span>
-        </div>
-
-        <p class="eyebrow" style="margin:10px 0 0">Set once for everyone</p>
-
-        <div class="field">
-          <label>Wordmark</label>
-          <div class="seg" role="radiogroup" aria-label="Wordmark variant">
-            <label><input type="radio" name="variant" id="v-dark" value="dark" checked><span>Dark</span></label>
-            <label><input type="radio" name="variant" id="v-white" value="white"><span>White</span></label>
-            <label><input type="radio" name="variant" id="v-none" value="none"><span>None</span></label>
-          </div>
-          <span class="hint">One file ships to every recipient — email can't swap it by theme. Dark is the right default; the dark-ground preview shows what it costs.</span>
         </div>
 
         <div class="field">
-          <label class="toggle" for="f-social">
-            <input type="checkbox" id="f-social">
-            <span>
-              <span class="tl">Include social icons</span><br>
-              <span class="hint">Four cream discs. Adds ~700 characters.</span>
+          <label for="f-drop">Photo <span class="opt">— optional</span></label>
+          <div class="drop" id="f-drop" tabindex="0" role="button" aria-label="Add a photo">
+            <span class="disc" id="d-disc">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="8.5" r="3.6"/><path d="M4.5 20.2a7.8 7.8 0 0 1 15 0" stroke-linecap="round"/></svg>
             </span>
-          </label>
+            <span>
+              <span class="dt" id="d-title">Drop a photo or click to choose</span>
+              <span class="dsub" id="d-sub">Cropped to a circle and sized automatically.</span>
+            </span>
+          </div>
+          <input type="file" id="f-file" accept="image/*" hidden>
+          <span class="hint">
+            <button type="button" class="linkbtn" id="d-clear" hidden>Remove photo</button>
+            <button type="button" class="linkbtn" id="d-paste">Paste a link instead</button>
+          </span>
+          <input id="f-photo" type="url" placeholder="https://…/your-photo.png" hidden>
         </div>
 
-        <details>
-          <summary>Hosted asset URLs</summary>
-          <div class="assetgrid">
-            <div class="field"><label for="a-dark">wordmark · dark</label><input id="a-dark" type="url"></div>
-            <div class="field"><label for="a-white">wordmark · white</label><input id="a-white" type="url"></div>
-            <div class="field"><label for="a-li">icon · linkedin</label><input id="a-li" type="url"></div>
-            <div class="field"><label for="a-x">icon · x</label><input id="a-x" type="url"></div>
-            <div class="field"><label for="a-fb">icon · facebook</label><input id="a-fb" type="url"></div>
-            <div class="field"><label for="a-ig">icon · instagram</label><input id="a-ig" type="url"></div>
-          </div>
-        </details>
+        <label class="toggle" for="f-social">
+          <input type="checkbox" id="f-social"> Include social icons
+        </label>
       </form>
 
-      <div class="note alert" style="margin-top:20px">
-        <strong>Before rollout</strong><br><br>
-        <strong>1.</strong> Confirm each social URL points at the account you actually want linked — these ship under every colleague's name.<br><br>
-        <strong>2.</strong> Host the six PNGs on the company asset account, not an individual's. A signature outlives whoever set it up; if the host lapses, every signature breaks at once.<br><br>
-        <strong>3.</strong> Send a test from Outlook desktop on Windows with remote images blocked. That combination is the one that finds problems.
+      <div class="note" id="cfg-note" style="margin-top:20px" hidden>
+        <strong>Uploads aren't switched on yet.</strong> Create an unsigned upload preset in
+        Cloudinary and put its name in <code>CLOUDINARY.preset</code> at the top of the script.
+        Until then, use <em>Paste a link instead</em>.
       </div>
     </section>
 
@@ -223,217 +189,269 @@
       <p class="eyebrow">Preview</p>
       <div class="previews">
         <div class="screen">
-          <div class="bar">Light ground</div>
+          <div class="bar">Light background</div>
           <div class="stage light"><div id="prev-light"></div></div>
         </div>
         <div class="screen">
-          <div class="bar">Dark ground · exactly as sent</div>
+          <div class="bar">Dark background</div>
           <div class="stage dark"><div id="prev-dark"></div></div>
         </div>
       </div>
-      <p class="hint" style="margin:-10px 0 22px">
-        The dark panel renders the markup untouched, which is stricter than reality:
-        Gmail and Apple Mail usually recolour dark <em>text</em> for you. What no client
-        ever recolours is an <em>image</em> — so treat the vanishing wordmark as the real
-        finding and the vanishing name as worst case.
-      </p>
 
       <div class="rowline">
-        <button type="button" class="primary" id="btn-rich">Copy signature</button>
-        <button type="button" class="ghost" id="btn-html">Copy HTML source</button>
-        <span class="meter" id="meter">0 / 10,000 chars</span>
+        <button type="button" class="btn primary" id="btn-rich">Copy signature</button>
+        <button type="button" class="btn ghost" id="btn-html">Copy HTML</button>
         <span class="status" id="status" hidden></span>
+        <span class="meter" id="meter"></span>
       </div>
 
-      <p class="eyebrow">HTML source</p>
-      <pre id="source"></pre>
-
-      <div class="steps">
-        <div class="step">
-          <h3><span>Gmail</span>Settings → Signature</h3>
-          <p>Hit <strong>Copy signature</strong>, paste into the signature box, save. Gmail caps signatures at 10,000 characters — the counter tracks it.</p>
-        </div>
-        <div class="step">
-          <h3><span>Outlook</span>Web and desktop</h3>
-          <p>Same paste. Then send yourself a test from <strong>Outlook desktop on Windows</strong> — it renders with the Word engine and breaks things nothing else does.</p>
-        </div>
-        <div class="step">
-          <h3><span>Apple Mail</span>Preferences → Signatures</h3>
-          <p>Paste, then untick <strong>Always match my default message font</strong>, or Mail strips the styling.</p>
-        </div>
-        <div class="step">
-          <h3><span>Test</span>Images off</h3>
-          <p>View a test with remote images blocked. Every <code>img</code> carries <code>alt</code> text and fixed dimensions, so the layout holds and the wordmark reads as “Maker”.</p>
-        </div>
+      <div class="install">
+        <div><b>Gmail</b>Settings → See all settings → Signature. Paste, then Save Changes at the bottom.</div>
+        <div><b>Outlook</b>Settings → Mail → Compose and reply. Paste into the signature box.</div>
+        <div><b>Apple Mail</b>Settings → Signatures. Paste, then untick “Always match my default message font”.</div>
       </div>
+
+      <details>
+        <summary>HTML source</summary>
+        <pre id="source"></pre>
+      </details>
     </section>
   </div>
 </div>
 
 <script>
 (function(){
-  var CDN = "https://res.cloudinary.com/y1jdutly/image/upload";
-  var ASSETS = {
-    "a-dark":  CDN + "/v1790000167/Vector.png",
-    "a-white": CDN + "/v1790000126/logowhite.png",
-    "a-li":    CDN + "/v1790000340/Link.png",
-    "a-x":     CDN + "/v1790000339/Link-1.png",
-    "a-fb":    CDN + "/v1790000340/Link-2.png",
-    "a-ig":    CDN + "/v1790000340/Link-3.png"
-  };
+  "use strict";
+
+  // ---- Config -------------------------------------------------------------
+  // preset: name of an UNSIGNED Cloudinary upload preset. Leave "" to disable
+  // uploading and fall back to pasting a URL.
+  var CLOUDINARY = { cloud:"y1jdutly", preset:"" };
+
+  var CDN  = "https://res.cloudinary.com/y1jdutly/image/upload";
+  var LOGO = CDN + "/v1790000167/Vector.png";
   var SOCIALS = [
-    { key:"a-li", url:"https://linkedin.com/company/maker", name:"LinkedIn"  },
-    { key:"a-x",  url:"https://twitter.com/maker",          name:"X"         },
-    { key:"a-fb", url:"https://facebook.com/maker",         name:"Facebook"  },
-    { key:"a-ig", url:"https://instagram.com/maker",        name:"Instagram" }
+    { src:CDN + "/v1790000340/Link.png",   url:"https://linkedin.com/company/maker", name:"LinkedIn"  },
+    { src:CDN + "/v1790000339/Link-1.png", url:"https://twitter.com/maker",          name:"X"         },
+    { src:CDN + "/v1790000340/Link-2.png", url:"https://facebook.com/maker",         name:"Facebook"  },
+    { src:CDN + "/v1790000340/Link-3.png", url:"https://instagram.com/maker",        name:"Instagram" }
   ];
 
-  Object.keys(ASSETS).forEach(function(k){ document.getElementById(k).value = ASSETS[k]; });
+  var CARD = "#F3F1EC", RULE = "#DDD9CF", INK = "#111111", DIM = "#6B6862", ACCENT = "#5423E7";
+  var SANS  = "Arial,Helvetica,sans-serif";
+  var SERIF = "Georgia,'Times New Roman',serif";
 
-  var el = {};
-  ["f-name","f-title","f-email","f-phone","f-photo","f-social"].forEach(function(id){
-    el[id] = document.getElementById(id);
-  });
-  var meter  = document.getElementById("meter");
-  var source = document.getElementById("source");
-  var status = document.getElementById("status");
-  var statusTimer;
+  var $ = function(id){ return document.getElementById(id); };
+  var photoUrl = "";
 
   function esc(s){
     return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;")
                     .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
   }
-  function attr(s){ return esc(s).replace(/'/g,"&#39;"); }
-  function asset(k){ return document.getElementById(k).value.trim() || ASSETS[k]; }
-  function variant(){
-    var v = document.querySelector('input[name="variant"]:checked');
-    return v ? v.value : "dark";
-  }
+  var attr = function(s){ return esc(s).replace(/'/g,"&#39;"); };
 
+  // ---- Signature markup ---------------------------------------------------
   function build(){
-    var name  = el["f-name"].value.trim()  || "Full Name";
-    var title = el["f-title"].value.trim();
-    var email = el["f-email"].value.trim();
-    var phone = el["f-phone"].value.trim();
-    var photo = el["f-photo"].value.trim();
+    var name  = $("f-name").value.trim()  || "Full Name";
+    var title = $("f-title").value.trim();
+    var email = $("f-email").value.trim();
+    var phone = $("f-phone").value.trim();
     var tel   = phone.replace(/[^\d+]/g,"");
-    var v     = variant();
 
-    var inner = "";
-
-    if (v !== "none") {
-      inner += '<div style="padding-bottom:10px;">'
-             + '<img src="' + attr(asset(v === "white" ? "a-white" : "a-dark")) + '"'
-             + ' alt="Maker" width="125" height="24" style="display:block;border:0;"></div>';
-    }
-
-    inner += '<div style="font-size:15px;font-weight:bold;color:#111111;line-height:20px;">'
-           + esc(name) + '</div>'
-           + '<div style="font-size:13px;color:#6B6862;line-height:18px;padding-bottom:8px;">'
-           + (title ? esc(title) + ' &middot; Maker' : 'Maker') + '</div>';
+    var text =
+        '<div style="font-family:' + SERIF + ';font-size:19px;color:' + INK + ';line-height:24px;">'
+      + esc(name) + '</div>'
+      + '<div style="font-size:13px;color:' + DIM + ';line-height:18px;padding-top:2px;">'
+      + (title ? esc(title) + ' &middot; Maker' : 'Maker') + '</div>';
 
     var lines = [];
-    if (email) lines.push('<a href="mailto:' + attr(email) + '" style="color:#111111;text-decoration:none;">' + esc(email) + '</a>');
-    if (phone) lines.push('<a href="tel:' + attr(tel) + '" style="color:#111111;text-decoration:none;">' + esc(phone) + '</a>');
-    lines.push('<a href="https://maker.co" style="color:#5423E7;text-decoration:none;font-weight:bold;">maker.co</a>');
-    inner += '<div style="font-size:13px;line-height:20px;">' + lines.join('<br>') + '</div>';
+    if (email) lines.push('<a href="mailto:' + attr(email) + '" style="color:' + INK + ';text-decoration:none;">' + esc(email) + '</a>');
+    if (phone) lines.push('<a href="tel:' + attr(tel) + '" style="color:' + INK + ';text-decoration:none;">' + esc(phone) + '</a>');
+    lines.push('<a href="https://maker.co" style="color:' + ACCENT + ';text-decoration:none;font-weight:bold;">maker.co</a>');
+    text += '<div style="font-size:13px;line-height:20px;padding-top:10px;">' + lines.join('<br>') + '</div>';
 
-    if (el["f-social"].checked) {
-      var cells = SOCIALS.map(function(s, i){
-        return '<td style="padding-right:' + (i === SOCIALS.length - 1 ? '0' : '8') + 'px;">'
-             + '<a href="' + attr(s.url) + '">'
-             + '<img src="' + attr(asset(s.key)) + '" alt="' + attr(s.name)
-             + '" width="24" height="24" style="display:block;border:0;"></a></td>';
+    var identity = photoUrl
+      ? '<table cellpadding="0" cellspacing="0" border="0"><tr>'
+        + '<td style="padding-right:15px;vertical-align:top;">'
+        + '<img src="' + attr(photoUrl) + '" alt="' + attr(name) + '" width="58" height="58"'
+        + ' style="display:block;border:0;border-radius:29px;"></td>'
+        + '<td style="vertical-align:top;">' + text + '</td></tr></table>'
+      : text;
+
+    var footer = '<td style="vertical-align:middle;">'
+      + '<img src="' + attr(LOGO) + '" alt="Maker" width="104" height="20"'
+      + ' style="display:block;border:0;"></td>';
+
+    if ($("f-social").checked) {
+      var cells = SOCIALS.map(function(s,i){
+        return '<td style="padding-left:' + (i ? 7 : 0) + 'px;">'
+             + '<a href="' + attr(s.url) + '"><img src="' + attr(s.src) + '" alt="' + attr(s.name)
+             + '" width="22" height="22" style="display:block;border:0;"></a></td>';
       }).join("");
-      inner += '<div style="padding-top:14px;">'
-             + '<table cellpadding="0" cellspacing="0" border="0"><tr>' + cells + '</tr></table></div>';
+      footer += '<td align="right" style="vertical-align:middle;">'
+              + '<table cellpadding="0" cellspacing="0" border="0" align="right"><tr>'
+              + cells + '</tr></table></td>';
     }
 
-    var body;
-    if (photo) {
-      // Headshot column, then a hairline rule, then the text block.
-      body = '  <tr>\n'
-           + '    <td style="padding-right:16px;vertical-align:top;">\n'
-           + '      <img src="' + attr(photo) + '" alt="' + attr(name)
-           + '" width="64" height="64" style="display:block;border:0;border-radius:32px;">\n'
-           + '    </td>\n'
-           + '    <td style="border-left:1px solid #E4E1D8;padding-left:16px;vertical-align:top;">\n'
-           + '      ' + inner + '\n'
-           + '    </td>\n'
-           + '  </tr>';
-    } else if (v === "none") {
-      body = '  <tr>\n'
-           + '    <td style="border-left:2px solid #5423E7;padding-left:14px;vertical-align:top;">\n'
-           + '      ' + inner + '\n'
-           + '    </td>\n'
-           + '  </tr>';
-    } else {
-      body = '  <tr>\n    <td>\n      ' + inner + '\n    </td>\n  </tr>';
-    }
-
-    return '<table cellpadding="0" cellspacing="0" border="0" style="font-family:Arial,Helvetica,sans-serif;">\n'
-         + body + '\n</table>';
+    return ''
+      + '<table cellpadding="0" cellspacing="0" border="0" width="392" bgcolor="' + CARD + '"'
+      + ' style="width:392px;background-color:' + CARD + ';border-radius:10px;font-family:' + SANS + ';">\n'
+      + '  <tr><td style="padding:22px 24px;">\n'
+      + '    ' + identity + '\n'
+      + '    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:18px;">\n'
+      + '      <tr><td height="1" bgcolor="' + RULE + '" style="height:1px;line-height:1px;font-size:0;">&nbsp;</td></tr>\n'
+      + '      <tr><td style="padding-top:16px;">\n'
+      + '        <table cellpadding="0" cellspacing="0" border="0" width="100%"><tr>' + footer + '</tr></table>\n'
+      + '      </td></tr>\n'
+      + '    </table>\n'
+      + '  </td></tr>\n'
+      + '</table>';
   }
 
   function render(){
     var html = build();
-    document.getElementById("prev-light").innerHTML = html;
-    document.getElementById("prev-dark").innerHTML  = html;
-    source.textContent = html;
-    var n = html.length;
-    meter.textContent = n.toLocaleString() + " / 10,000 chars";
-    meter.setAttribute("data-over", n > 10000 ? "1" : "0");
+    $("prev-light").innerHTML = html;
+    $("prev-dark").innerHTML  = html;
+    $("source").textContent   = html;
+    $("meter").textContent    = html.length.toLocaleString() + " characters";
   }
 
-  function flash(msg){
-    clearTimeout(statusTimer);
-    status.textContent = msg;
-    status.hidden = false;
-    statusTimer = setTimeout(function(){ status.hidden = true; }, 2600);
+  // ---- Photo: crop to a circle on the card colour, then upload ------------
+  function processFile(file){
+    if (!file || !/^image\//.test(file.type)) return;
+    setDrop("Preparing…", "Cropping and resizing.");
+    var url = URL.createObjectURL(file);
+    var img = new Image();
+    img.onload = function(){
+      var S = 192, c = document.createElement("canvas");
+      c.width = c.height = S;
+      var x = c.getContext("2d");
+      x.fillStyle = CARD; x.fillRect(0,0,S,S);
+      x.save();
+      x.beginPath(); x.arc(S/2,S/2,S/2,0,Math.PI*2); x.clip();
+      var side = Math.min(img.width, img.height);
+      x.drawImage(img, (img.width-side)/2, (img.height-side)/2, side, side, 0, 0, S, S);
+      x.restore();
+      URL.revokeObjectURL(url);
+      showDisc(c.toDataURL("image/png"));
+      c.toBlob(function(blob){ upload(blob); }, "image/png");
+    };
+    img.onerror = function(){
+      URL.revokeObjectURL(url);
+      setDrop("That file didn't open", "Try a JPG or PNG.");
+    };
+    img.src = url;
   }
 
-  function legacy(text, msg){
-    var ta = document.createElement("textarea");
-    ta.value = text;
-    ta.style.position = "fixed"; ta.style.opacity = "0";
-    document.body.appendChild(ta); ta.select();
-    try { document.execCommand("copy"); flash(msg); }
-    catch(e){ flash("Copy blocked — select the source manually"); }
-    document.body.removeChild(ta);
+  function upload(blob){
+    if (!CLOUDINARY.preset) {
+      setDrop("Upload not configured", "Use “Paste a link instead” below.");
+      $("cfg-note").hidden = false;
+      return;
+    }
+    setDrop("Uploading…", "One moment.");
+    var fd = new FormData();
+    fd.append("file", blob, "headshot.png");
+    fd.append("upload_preset", CLOUDINARY.preset);
+    fetch("https://api.cloudinary.com/v1_1/" + CLOUDINARY.cloud + "/image/upload",
+          { method:"POST", body:fd })
+      .then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
+      .then(function(d){
+        photoUrl = d.secure_url;
+        setDrop("Photo added", "Hosted and ready to send.");
+        $("d-clear").hidden = false;
+        render();
+      })
+      .catch(function(){
+        setDrop("Upload failed", "Use “Paste a link instead” below.");
+      });
   }
 
-  document.getElementById("btn-html").addEventListener("click", function(){
-    var t = build();
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(t).then(function(){ flash("HTML source copied"); },
-                                            function(){ legacy(t, "HTML source copied"); });
-    } else { legacy(t, "HTML source copied"); }
+  function showDisc(src){
+    $("d-disc").innerHTML = '<img src="' + src + '" alt="">';
+  }
+  function setDrop(t, s){ $("d-title").textContent = t; $("d-sub").textContent = s; }
+
+  function clearPhoto(){
+    photoUrl = "";
+    $("f-photo").value = "";
+    $("f-photo").hidden = true;
+    $("d-clear").hidden = true;
+    $("d-disc").innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="8.5" r="3.6"/><path d="M4.5 20.2a7.8 7.8 0 0 1 15 0" stroke-linecap="round"/></svg>';
+    setDrop("Drop a photo or click to choose", "Cropped to a circle and sized automatically.");
+    render();
+  }
+
+  var drop = $("f-drop");
+  drop.addEventListener("click", function(){ $("f-file").click(); });
+  drop.addEventListener("keydown", function(e){
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); $("f-file").click(); }
+  });
+  ["dragenter","dragover"].forEach(function(t){
+    drop.addEventListener(t, function(e){ e.preventDefault(); drop.classList.add("over"); });
+  });
+  ["dragleave","drop"].forEach(function(t){
+    drop.addEventListener(t, function(e){ e.preventDefault(); drop.classList.remove("over"); });
+  });
+  drop.addEventListener("drop", function(e){
+    if (e.dataTransfer && e.dataTransfer.files[0]) processFile(e.dataTransfer.files[0]);
+  });
+  $("f-file").addEventListener("change", function(e){ processFile(e.target.files[0]); });
+  $("d-clear").addEventListener("click", clearPhoto);
+  $("d-paste").addEventListener("click", function(){
+    var f = $("f-photo");
+    f.hidden = !f.hidden;
+    if (!f.hidden) f.focus();
+  });
+  $("f-photo").addEventListener("input", function(){
+    photoUrl = $("f-photo").value.trim();
+    if (photoUrl) { showDisc(photoUrl); $("d-clear").hidden = false; }
+    render();
   });
 
-  document.getElementById("btn-rich").addEventListener("click", function(){
-    var html  = build();
-    var plain = document.getElementById("prev-light").innerText;
+  // ---- Copy ---------------------------------------------------------------
+  var timer;
+  function flash(msg){
+    clearTimeout(timer);
+    var s = $("status");
+    s.textContent = msg; s.hidden = false;
+    timer = setTimeout(function(){ s.hidden = true; }, 2600);
+  }
+  function legacy(text, msg){
+    var ta = document.createElement("textarea");
+    ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); flash(msg); }
+    catch(e){ flash("Copy blocked — select the HTML manually"); }
+    document.body.removeChild(ta);
+  }
+  function selectNode(){
+    var n = $("prev-light"), r = document.createRange();
+    r.selectNodeContents(n);
+    var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+    try { document.execCommand("copy"); flash("Copied — now paste it into your email settings"); }
+    catch(e){ flash("Press Ctrl/Cmd+C to copy the selection"); }
+  }
+  $("btn-rich").addEventListener("click", function(){
+    var html = build(), plain = $("prev-light").innerText;
     if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
       navigator.clipboard.write([ new ClipboardItem({
         "text/html":  new Blob([html],  { type:"text/html"  }),
         "text/plain": new Blob([plain], { type:"text/plain" })
-      })]).then(function(){ flash("Copied — paste into your signature box"); },
-                function(){ selectNode(); });
+      })]).then(function(){ flash("Copied — now paste it into your email settings"); }, selectNode);
     } else { selectNode(); }
   });
+  $("btn-html").addEventListener("click", function(){
+    var t = build();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(t).then(function(){ flash("HTML copied"); },
+                                            function(){ legacy(t, "HTML copied"); });
+    } else { legacy(t, "HTML copied"); }
+  });
 
-  function selectNode(){
-    var node  = document.getElementById("prev-light");
-    var range = document.createRange();
-    range.selectNodeContents(node);
-    var sel = window.getSelection();
-    sel.removeAllRanges(); sel.addRange(range);
-    try { document.execCommand("copy"); flash("Copied — paste into your signature box"); }
-    catch(e){ flash("Copy blocked — preview is selected, press Ctrl/Cmd+C"); }
-  }
-
-  document.getElementById("sigform").addEventListener("input", render);
-  document.getElementById("sigform").addEventListener("change", render);
+  $("sigform").addEventListener("input", render);
+  $("sigform").addEventListener("change", render);
+  if (!CLOUDINARY.preset) $("d-sub").textContent = "Cropped to a circle automatically.";
   render();
 })();
 </script>
