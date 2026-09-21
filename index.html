@@ -385,50 +385,68 @@
     lines.push('<a href="https://maker.co" style="color:' + ACCENT + ';text-decoration:none;font-weight:bold;">maker.co</a>');
     text += '<div style="font-size:13px;line-height:20px;padding-top:10px;">' + lines.join('<br>') + '</div>';
 
-    // Details left, portrait hard right. The text cell claims all the slack and
-    // carries the gutter, so the portrait cell is exactly the image — never a
-    // declared width fighting its own padding, which squashes the circle.
-    var identity = photoUrl
-      ? '<table cellpadding="0" cellspacing="0" border="0" width="100%"><tr>'
-        + '<td width="100%" style="vertical-align:top;padding-right:16px;">' + text + '</td>'
-        + '<td align="right" style="vertical-align:top;font-size:0;line-height:0;">'
-        + '<img src="' + attr(photoUrl) + '" alt="' + attr(name) + '" width="62" height="62"'
-        + ' style="display:block;border:0;width:62px;height:62px;border-radius:31px;"></td>'
-        + '</tr></table>'
-      : text;
-
-    // Socials left, wordmark hard right.
+    // Gmail re-serialises a pasted signature when the message is sent, and
+    // flattens deeply nested tables. The previous markup was four levels deep,
+    // so the inner tables were dropped and their content foster-parented out of
+    // the card, leaving an empty cream box with everything stacked beneath it.
+    //
+    // This is two levels: the card, and one grid inside it. Columns are shared
+    // across rows via colspan instead of nested tables, the divider is a cell
+    // border rather than its own table, no table carries a margin, and every
+    // cell repeats bgcolor so the card colour survives even if the outer table
+    // is stripped.
     var logo = '<img src="' + attr(LOGO) + '" alt="Maker" width="82" height="16"'
              + ' style="display:block;border:0;">';
-    var footer;
-    if ($("f-social").checked) {
-      var cells = SOCIALS.map(function(s,i){
-        return '<td style="padding-right:' + (i === SOCIALS.length - 1 ? 0 : 9) + 'px;">'
-             + '<a href="' + attr(s.url) + '"><img src="' + attr(s.src) + '" alt="' + attr(s.name)
-             + '" width="28" height="28" style="display:block;border:0;"></a></td>';
-      }).join("");
-      footer = '<td style="vertical-align:middle;">'
-             + '<table cellpadding="0" cellspacing="0" border="0"><tr>' + cells + '</tr></table></td>'
-             + '<td align="right" style="vertical-align:middle;">' + logo + '</td>';
-    } else {
-      footer = '<td style="vertical-align:middle;">' + logo + '</td>';
-    }
+    var socialOn = $("f-social").checked;
+    var n  = Math.max(socialOn ? SOCIALS.length + 1 : 1, photoUrl ? 2 : 1);
+    var bg = ' bgcolor="' + CARD + '"';
+    var fill = 'background-color:' + CARD + ';';
 
-    // 340px fits a 360px phone viewport and Gmail's signature box, which are the
-    // two narrowest places this lands. max-width lets it shrink below that where
-    // it is supported; Outlook ignores max-width and holds 340, which is fine.
+    var idRow = photoUrl
+      ? '      <tr>\n'
+        + '        <td colspan="' + (n - 1) + '" width="100%"' + bg + ' style="' + fill
+        + 'width:100%;vertical-align:top;padding-right:16px;">' + text + '</td>\n'
+        + '        <td align="right"' + bg + ' style="' + fill
+        + 'vertical-align:top;font-size:0;line-height:0;">'
+        + '<img src="' + attr(photoUrl) + '" alt="' + attr(name) + '" width="62" height="62"'
+        + ' style="display:block;border:0;width:62px;height:62px;border-radius:31px;"></td>\n'
+        + '      </tr>\n'
+      : '      <tr><td colspan="' + n + '"' + bg + ' style="' + fill
+        + 'vertical-align:top;">' + text + '</td></tr>\n';
+
+    var rule = 'border-top:1px solid ' + RULE + ';padding-top:16px;vertical-align:middle;';
+    var footRow = '      <tr>\n';
+    if (socialOn) {
+      footRow += SOCIALS.map(function(s, i){
+        return '        <td' + bg + ' style="' + fill + rule
+             + 'padding-right:' + (i === SOCIALS.length - 1 ? 0 : 9) + 'px;">'
+             + '<a href="' + attr(s.url) + '"><img src="' + attr(s.src) + '" alt="' + attr(s.name)
+             + '" width="28" height="28" style="display:block;border:0;"></a></td>\n';
+      }).join("");
+      footRow += '        <td align="right"' + bg + ' style="' + fill + rule + '">' + logo + '</td>\n';
+    } else {
+      footRow += '        <td colspan="' + n + '"' + bg + ' style="' + fill + rule + '">'
+               + logo + '</td>\n';
+    }
+    footRow += '      </tr>\n';
+
+    // 340px fits a 360px phone viewport and Gmail's signature box, the two
+    // narrowest places this lands. max-width lets it shrink further where that
+    // is supported; Outlook ignores max-width and holds 340, which is fine.
     return ''
-      + '<table cellpadding="0" cellspacing="0" border="0" width="340" bgcolor="' + CARD + '"'
-      + ' style="width:340px;max-width:100%;background-color:' + CARD + ';border-radius:10px;font-family:' + SANS + ';">\n'
-      + '  <tr><td style="padding:20px 22px;">\n'
-      + '    ' + identity + '\n'
-      + '    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:18px;">\n'
-      + '      <tr><td height="1" bgcolor="' + RULE + '" style="height:1px;line-height:1px;font-size:0;">&nbsp;</td></tr>\n'
-      + '      <tr><td style="padding-top:16px;">\n'
-      + '        <table cellpadding="0" cellspacing="0" border="0" width="100%"><tr>' + footer + '</tr></table>\n'
-      + '      </td></tr>\n'
-      + '    </table>\n'
-      + '  </td></tr>\n'
+      + '<table cellpadding="0" cellspacing="0" border="0" width="340"' + bg
+      + ' style="width:340px;max-width:100%;' + fill + 'border-radius:10px;'
+      + 'font-family:' + SANS + ';">\n'
+      + '  <tr>\n'
+      + '    <td' + bg + ' style="' + fill + 'padding:20px 22px;">\n'
+      + '      <table cellpadding="0" cellspacing="0" border="0" width="100%">\n'
+      + idRow
+      + '      <tr><td colspan="' + n + '" height="18"'
+      + ' style="height:18px;font-size:0;line-height:0;">&nbsp;</td></tr>\n'
+      + footRow
+      + '      </table>\n'
+      + '    </td>\n'
+      + '  </tr>\n'
       + '</table>';
   }
 
